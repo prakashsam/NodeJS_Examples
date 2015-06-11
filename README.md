@@ -1,2 +1,5 @@
 # NodeJS_Examples
-Repositoru to store examples about NodeJS
+Repository to store examples about NodeJS
+
+## moduleExportsNode ##
+moduleExportsNode has the node code to create export to routes in NodeJS.
