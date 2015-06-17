@@ -13,6 +13,7 @@ module.exports = function(express, app){
 		req.session.favColor = "Red";
 		res.send('Setting favourite color!');
 	});
+	
 	router.get('/getcolor', function(req, res){
 		// If favColor be setted in the function above, you will not get Not found, instead will get the color requested
 		console.log("Session: ", req.session);
