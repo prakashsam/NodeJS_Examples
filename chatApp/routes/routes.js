@@ -1,23 +1,34 @@
-module.exports = function(express, app){
+module.exports = function(express, app, passaport){
 	var router = express.Router();
 	
 	router.get('/', function(req, res){
 		res.render('index', {title:'Welcome to ChatApp'});
 	});
 	
-	router.get('/chatrooms', function(req, res){
-		res.render('chatrooms', {title:'Chatrooms'});
+	router.get('/auth/facebook', passaport.authenticate('facebook'));
+	
+	router.get('/auth/facebook/callback', passaport.authenticate('facebook', {
+		successRedirect:'/chatrooms',
+		failureRedirect:'/'
+	}));
+	
+	// Defining a middleware (a function)
+	function securePages(req, res, next){
+		if(req.isAuthenticated()){
+			next();
+		}
+		else{
+			res.redirect('/');
+		}
+	}
+	
+	router.get('/chatrooms', securePages, function(req, res, next){
+		res.render('chatrooms', {title:'Chatrooms', user:req.user});
 	});
 	
-	router.get('/setcolor', function(req, res){
-		req.session.favColor = "Red";
-		res.send('Setting favourite color!');
-	});
-	
-	router.get('/getcolor', function(req, res){
-		// If favColor be setted in the function above, you will not get Not found, instead will get the color requested
-		console.log("Session: ", req.session);
-		res.send('Favourite color: ' + (req.session.favColor===undefined?"Not found":req.session.favColor));
+	router.get('/logout', function(req, res, next){
+		req.logout();
+		res.redirect('/');
 	});
 	
 	app.use('/', router);

@@ -36,7 +36,7 @@ else{
 		secret:config.sessionSecret,
 		store:new connectMongo({
 			//url:config.dbURL,
-			mongoose_connection:mongoose.connections[0],
+			mongooseConnection:mongoose.connections[0],
 			stringify:true
 		}),// store session in a new instance of connect mongo
 		resave: true,
@@ -54,9 +54,12 @@ app.use(session({
 	saveUninitialized: true
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 require('./auth/passportAuth.js')(passport, FacebookStrategy, config, mongoose);
 
-require('./routes/routes.js')(express, app);
+require('./routes/routes.js')(express, app, passport);
 
 app.listen(3000, function(){
 	console.log("Chat app is running on 3000.");
