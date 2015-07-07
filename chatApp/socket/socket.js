@@ -10,4 +10,17 @@ module.exports = function(io, rooms){
 		});
 
 	});
+
+	var messages = io.of('/messages').on('connection', function(socket){
+		console.log('Connected to the chatroom!');
+		socket.on('joinroom', function(data){
+			socket.username = data.user;
+			socket.userPic = data.userPic;
+			socket.join(data.room);
+		})
+
+		socket.on('newMessage', function(data){
+			socket.broadcast.to(data.room_number).emit('messagefeed', JSON.stringify(data));
+		})
+	});
 }
